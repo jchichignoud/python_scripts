@@ -5,7 +5,10 @@ import xml.etree.ElementTree as et
 timebase = 0
 
 print("Input full path of Premiere XML:")
-xml_fullpath = input()
+if sys.version_info[0] < 3:
+    xml_fullpath = raw_input()
+else:
+    xml_fullpath = input()
 
 # xml_fullpath = sys.argv[1]
 base_path, xml_file_name = os.path.split(xml_fullpath)
