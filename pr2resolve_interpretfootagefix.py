@@ -23,7 +23,7 @@ interpreted_files = [] # will add files that need to be interpreted in Resolve
 
 for clipitem in root.find("sequence").find("media").find("video").iter("clipitem"):
     timebase = int(clipitem[4][0].text)
-    if clipitem.find("file"):
+    if clipitem.find("file") is not None:
         file_rate = int(clipitem.find("file").find("rate").find("timebase").text)
         if file_rate != timebase:
             interpreted_files.append([clipitem.find("file").find("name").text, timebase, clipitem.find("file").find("timecode").find("rate").find("timebase").text])
