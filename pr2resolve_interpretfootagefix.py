@@ -5,25 +5,30 @@ import xml.etree.ElementTree as et
 timebase = 0
 
 print("Input full path of Premiere XML:")
+# handle Python 2 and 3 input differences
 if sys.version_info[0] < 3:
     xml_fullpath = raw_input()
 else:
     xml_fullpath = input()
 
-# xml_fullpath = sys.argv[1]
+
+# Get path of input XML and set up output XML
 base_path, xml_file_name = os.path.split(xml_fullpath)
 name, ext = os.path.splitext(xml_file_name)
 xml_out_fullpath = base_path + os.sep + name + "_fixed" + ext
+txt_out_fullpath = base_path + os.sep + name + "_pr2resolve.txt"
+report = open(txt_out_fullpath,'w')
+# report.write("Files that will need to be interpreted in Resolve:\n")
 
 tree = et.parse(xml_fullpath)
 
 root = tree.getroot()
 
-interpreted_files = [] # will add files that need to be interpreted in Resolve
+interpreted_files = [] # will add files that need to be interpreted in Resolve, to be printed to user
 
 for clipitem in root.find("sequence").find("media").find("video").iter("clipitem"):
     timebase = int(clipitem[4][0].text)
-    if clipitem.find("file") is not None:
+    if clipitem.find("file") is not None and len(clipitem.find("file")) is not 0:
         file_rate = int(clipitem.find("file").find("rate").find("timebase").text)
         if file_rate != timebase:
             interpreted_files.append([clipitem.find("file").find("name").text, timebase, clipitem.find("file").find("timecode").find("rate").find("timebase").text])
@@ -38,9 +43,12 @@ tree.write(xml_out_fullpath)
 print("\n****************\n")
 
 print("Files that will need to be interpreted in Resolve:")
-# print (interpreted_files[0].find("name").text)
 for i in range(len(interpreted_files)):
-    print (interpreted_files[i][0] + "   " + str(interpreted_files[i][2]) + " > " + str(interpreted_files[i][1]))
+    line = (interpreted_files[i][0] + "   " + str(interpreted_files[i][2]) + " > " + str(interpreted_files[i][1]))
+    print (line)
+    report.write(line + "\n")
 
 print("\n****************\n")
 print("The new XML has been created at: " + xml_out_fullpath)
+report.close()
+print("A report has been created at: " + txt_out_fullpath)
