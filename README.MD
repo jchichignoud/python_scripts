@@ -12,7 +12,13 @@ This script takes a Premiere XML as input and cleans it up to avoid conform issu
 
 It creates a new XML with the original name + _fixed next to the source file, as well as a txt file with the list of the footage to be interpreted in Resolve.
 
-### HOW TO USE (MACOS Guide)
+## HOW TO USE (MaCOS Automator Guide - Recommended)
+- Double-click the pr2resolve.workflow file
+- Click Install
+- Right click a Premiere XML file in the Finder and select pr2resolve
+
+
+### HOW TO USE (MaCOS Terminal Guide)
 - Open Terminal
 - Navigate to the source folder where the .py file is stored ("cd /Users/*username*/Desktop/" for example), you can drag and drop the containing folder into the terminal to avoid typing it in
 - Type "python pr2resolve_interpretfootagefix.py"
@@ -22,6 +28,7 @@ It creates a new XML with the original name + _fixed next to the source file, as
 
 ### HOW TO USE (Windows Guide)
 - Download and install a Python interpreter (latest recommended) from https://www.python.org/
+- Open a Command Prompt
 - Follow the MacOS guide above. You can get the full path of the XML by Shift+Right Clicking the file and selecting "Copy as path"
 
 ### RECENT CHANGES
@@ -32,6 +39,7 @@ It creates a new XML with the original name + _fixed next to the source file, as
 
 ### KNOWN ISSUES
 - No NTSC framerates (integer framerates only) for now
+- Flags Graphics as being the wrong framerate
 - No error handling
 
 ---

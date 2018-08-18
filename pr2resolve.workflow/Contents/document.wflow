@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>444.7</string>
+	<key>AMApplicationVersion</key>
+	<string>2.8</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.string</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>2.0.3</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>COMMAND_STRING</key>
+					<dict/>
+					<key>CheckedForUserDefaultShell</key>
+					<dict/>
+					<key>inputMethod</key>
+					<dict/>
+					<key>shell</key>
+					<dict/>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.string</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run Shell Script.action</string>
+				<key>ActionName</key>
+				<string>Run Shell Script</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>COMMAND_STRING</key>
+					<string>import os
+import sys
+import xml.etree.ElementTree as et
+
+timebase = 0
+
+print("Input full path of Premiere XML:")
+# handle Python 2 and 3 input differences
+if sys.version_info[0] &lt; 3:
+    xml_fullpath = raw_input()
+else:
+    xml_fullpath = input()
+
+
+# Get path of input XML and set up output XML
+base_path, xml_file_name = os.path.split(xml_fullpath)
+name, ext = os.path.splitext(xml_file_name)
+xml_out_fullpath = base_path + os.sep + name + "_fixed" + ext
+txt_out_fullpath = base_path + os.sep + name + "_pr2resolve.txt"
+report = open(txt_out_fullpath,'w')
+report.write("*************************************************************************\n")
+report.write("********************  FILES TO INTERPRET IN RESOLVE  ********************\n")
+report.write("*************************************************************************\n")
+
+tree = et.parse(xml_fullpath)
+
+root = tree.getroot()
+
+interpreted_files = [] # will add files that need to be interpreted in Resolve, to be printed to user
+
+for clipitem in root.find("sequence").find("media").find("video").iter("clipitem"):
+    timebase = int(clipitem[4][0].text)
+    if clipitem.find("file") is not None and len(clipitem.find("file")) is not 0:
+        file_rate = int(clipitem.find("file").find("rate").find("timebase").text)
+        if file_rate != timebase:
+            interpreted_files.append([clipitem.find("file").find("name").text, timebase, clipitem.find("file").find("timecode").find("rate").find("timebase").text])
+            clipitem.find("file").find("timecode").find("rate").find("timebase").text = str(timebase)
+            clipitem.find("file").find("rate").find("timebase").text = str(timebase)
+            clipitem.find("file").find("media").find("video").find("samplecharacteristics").find("rate").find("timebase").text = str(timebase)
+            start_frame = int(clipitem.find("file").find("timecode").find("frame").text)
+            clipitem.find("file").find("timecode").find("frame").text = str(int(start_frame / file_rate * timebase))
+
+tree.write(xml_out_fullpath)
+
+print("\n*************************************************************************")
+print("********************  FILES TO INTERPRET IN RESOLVE  ********************")
+print("*************************************************************************\n")
+
+for i in range(len(interpreted_files)):
+    line = (interpreted_files[i][0] + "   " + str(interpreted_files[i][2]) + " &gt; " + str(interpreted_files[i][1]))
+    print (line)
+    report.write(line + "\n")
+
+print("\n*************************************************************************\n")
+print("The new XML has been created at: " + xml_out_fullpath)
+report.close()
+print("A report has been created at: " + txt_out_fullpath)
+print("\n*************************************************************************")</string>
+					<key>CheckedForUserDefaultShell</key>
+					<true/>
+					<key>inputMethod</key>
+					<integer>0</integer>
+					<key>shell</key>
+					<string>/usr/bin/python</string>
+					<key>source</key>
+					<string></string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.RunShellScript</string>
+				<key>CFBundleVersion</key>
+				<string>2.0.3</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunShellScriptAction</string>
+				<key>InputUUID</key>
+				<string>D27FC4C8-AD6C-4B85-8DA6-362BE8F4CA8F</string>
+				<key>Keywords</key>
+				<array>
+					<string>Shell</string>
+					<string>Script</string>
+					<string>Command</string>
+					<string>Run</string>
+					<string>Unix</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>71EB9202-0C9C-4424-A5E8-4A63177DAF0A</string>
+				<key>UUID</key>
+				<string>7142B1E7-B8D7-4C20-B652-CED39C870D84</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<integer>0</integer>
+						<key>name</key>
+						<string>inputMethod</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+					<key>1</key>
+					<dict>
+						<key>default value</key>
+						<string></string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>1</string>
+					</dict>
+					<key>2</key>
+					<dict>
+						<key>default value</key>
+						<false/>
+						<key>name</key>
+						<string>CheckedForUserDefaultShell</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>2</string>
+					</dict>
+					<key>3</key>
+					<dict>
+						<key>default value</key>
+						<string></string>
+						<key>name</key>
+						<string>COMMAND_STRING</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>3</string>
+					</dict>
+					<key>4</key>
+					<dict>
+						<key>default value</key>
+						<string>/bin/sh</string>
+						<key>name</key>
+						<string>shell</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>4</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>413.000000:253.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>serviceApplicationBundleID</key>
+		<string>com.apple.finder</string>
+		<key>serviceApplicationPath</key>
+		<string>/System/Library/CoreServices/Finder.app</string>
+		<key>serviceInputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject</string>
+		<key>serviceOutputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceProcessesInput</key>
+		<integer>0</integer>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.servicesMenu</string>
+	</dict>
+</dict>
+</plist>

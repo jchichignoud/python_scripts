@@ -18,7 +18,9 @@ name, ext = os.path.splitext(xml_file_name)
 xml_out_fullpath = base_path + os.sep + name + "_fixed" + ext
 txt_out_fullpath = base_path + os.sep + name + "_pr2resolve.txt"
 report = open(txt_out_fullpath,'w')
-# report.write("Files that will need to be interpreted in Resolve:\n")
+report.write("*************************************************************************\n")
+report.write("********************  FILES TO INTERPRET IN RESOLVE  ********************\n")
+report.write("*************************************************************************\n")
 
 tree = et.parse(xml_fullpath)
 
@@ -40,15 +42,17 @@ for clipitem in root.find("sequence").find("media").find("video").iter("clipitem
 
 tree.write(xml_out_fullpath)
 
-print("\n****************\n")
+print("\n*************************************************************************")
+print("********************  FILES TO INTERPRET IN RESOLVE  ********************")
+print("*************************************************************************\n")
 
-print("Files that will need to be interpreted in Resolve:")
 for i in range(len(interpreted_files)):
     line = (interpreted_files[i][0] + "   " + str(interpreted_files[i][2]) + " > " + str(interpreted_files[i][1]))
     print (line)
     report.write(line + "\n")
 
-print("\n****************\n")
+print("\n*************************************************************************\n")
 print("The new XML has been created at: " + xml_out_fullpath)
 report.close()
 print("A report has been created at: " + txt_out_fullpath)
+print("\n*************************************************************************")
