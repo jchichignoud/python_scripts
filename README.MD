@@ -32,6 +32,7 @@ It creates a new XML with the original name + _fixed next to the source file, as
 - Follow the MacOS guide above. You can get the full path of the XML by Shift+Right Clicking the file and selecting "Copy as path"
 
 ### RECENT CHANGES
+- Fixed start frame calculation issue in Python 2
 - Handling NTSC framerates
 - Now works on Windows
 - Prints a list of the files that need to be interpreted (will make it more readable)

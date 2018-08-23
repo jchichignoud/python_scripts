@@ -109,7 +109,6 @@ for clipitem in root.find("sequence").find("media").find("video").iter("clipitem
             file_rate = int(clipitem.find("file").find("rate").find("timebase").text)  
         else:
             file_rate = drop_frame_convert(int(clipitem.find("file").find("rate").find("timebase").text))
-            print(file_rate)
         
         if file_rate != timebase:
             interpreted_files.append([clipitem.find("file").find("name").text, timebase, file_rate])
@@ -117,7 +116,7 @@ for clipitem in root.find("sequence").find("media").find("video").iter("clipitem
             clipitem.find("file").find("rate").find("timebase").text = str(timebase)
             clipitem.find("file").find("media").find("video").find("samplecharacteristics").find("rate").find("timebase").text = str(timebase)
             start_frame = int(clipitem.find("file").find("timecode").find("frame").text)
-            clipitem.find("file").find("timecode").find("frame").text = str(int(start_frame / file_rate * timebase))
+            clipitem.find("file").find("timecode").find("frame").text = str(int(start_frame / float(file_rate) * timebase))
 
 tree.write(xml_out_fullpath)
 
